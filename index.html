@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport"
+        content="width=device-width,
+        initial-scale=1,minimum-scale=1,
+        maximum-scale=1,user-scalable=no"/>
+    <title>智慧城市</title>
+    <link rel="stylesheet" href="/style.css" type="text/css"/>
+     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏙️</text></svg>">
+</head>
+<body>
+    <div id="app">
+            <div class="header">
+                <img class="logo" src="/water_face.png" alt="">
+            </div>
+            <div class="page-container" ref="'container">
+                <div class="model-container">
+                    <!-- 移除加载提示和进度条 -->
+                    <div id="canvas" class="canvas">
+                    </div>
+                    <div id="all-charts" class="all-charts">
+                        <div class="section-one">
+                            <!-- <img class="img-header" src="/water_face.png" alt=""> -->
+                            <div class="section-title-main">显著成就</div>
+                            <div class="section-item">
+                                <span class="section-title">脱贫人口</span>
+                                <span id="poverty-population" class="section-number">0</span>
+                                <span class="section-unit">人</span>
+                            </div>
+                            <div class="section-item">
+                                <span class="section-title">贫困降幅</span>
+                                <span id="reduction-rate" class="section-number">0</span>
+                                <span class="section-unit">%</span>
+                            </div>
+                            <div class="section-item">
+                                <span class="section-title">人均可支配收入</span>
+                                <span id="disposable-income" class="section-number">0</span>
+                                <span class="section-unit">元</span>
+                            </div>
+                            <div class="section-item">
+                                <span class="section-title">消除贫困村</span>
+                                <span id="eliminated-villages" class="section-number">0</span>
+                                <span class="section-unit">个</span>
+                            </div>
+                        </div>
+                        <div class="section-two">
+                            <!-- <img class="img-header" src="/water_face.png" alt=""> -->
+                            <div id="bar-chart"></div>
+                        </div>
+                        <div class="section-three">
+                            <!-- <img class="img-header" src="/water_face.png" alt=""> -->
+                            <div id="pie-chart"></div>
+                        </div>
+                    </div>
+
+                     <div id="right-btns" class="right-btns" style="pointer-events: all;">
+                <div id="mode-topView" class="mode-btn" title="顶视图">顶视</div>
+            </div>
+                </div>
+            </div>
+    </div>
+    <!-- 这些元素将由BuildInfo.js动态创建和管理 -->
+    <div id="tag-1" class="building-name"></div>
+    <div id="tag-2" class="building-info"></div>
+<div id="tag-3"
+class="building-fire"
+style="display: none;">
+    <div>着火大楼：东方明珠</div>
+    <div>着火楼层：30层</div>
+    <div>疏散人群：1800人</div>
+</div>
+
+    <!-- jsdelivr 路径更稳定，同样带固定版本 -->
+    <!-- <script type="module">
+    import * as fflate from 'https://cdn.skypack.dev/fflate@0.8.2?min';
+    </script> -->
+    <!-- 必须保留这行CDN引入，否则FBXLoader仍会报fflate未定义 -->
+    <script src="https://fastly.jsdelivr.net/npm/three@0.8.2/dist/fflate.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/three@0.134.0/examples/js/loaders/FBXLoader.js"></script>
+
+     <!-- 关键：Skypack CDN 全局引入fflate@0.8.2，挂载到window.fflate -->
+    <!-- 引入 fflate -->
+    <script src="https://fastly.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
+    <!-- 引入Three.js库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- 引入dat.gui库 -->
+    <!-- <script src="https://unpkg.com/dat.gui@0.7.7/build/dat.gui.min.js"></script> -->
+    <!-- 引入CSS2DRenderer -->
+    <script src="https://fastly.jsdelivr.net/npm/three@0.134.0/examples/js/renderers/CSS2DRenderer.js"></script>
+    <!-- 引入模型加载器 -->
+    <script src="https://fastly.jsdelivr.net/npm/three@0.134.0/examples/js/loaders/FBXLoader.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/three@0.134.0/examples/js/loaders/GLTFLoader.js"></script>
+    <!-- 引入水效果 -->
+    <script src="https://fastly.jsdelivr.net/npm/three@0.134.0/examples/js/objects/Water.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <!-- 基础核心类 -->
+<script src="BaseModel.js"></script>
+<script src="EventBus.js"></script>
+<script src="EffectManager.js"></script>
+<script src="ClickHandler.js"></script>
+
+<!-- 工具类 -->
+<script src="sky.js"></script>
+<script src="EagesLine.js"></script>
+<script src="getBoxcenter.js"></script>
+<script src="loadManager.js"></script>
+<script src="utils.js"></script>
+
+<!-- 组件类 -->
+<script src="BuildInfo.js"></script>
+<!-- 取消注释火灾相关脚本 -->
+<script src="Fire.js"></script>
+<script src="FireBall.js"></script>
+<script src="CityWater.js"></script>
+<script src="City.js"></script>
+<script src="ship.js"></script>
+<script src="Fly.js"></script>
+<script src="FreeCameraController.js"></script>
+
+<!-- 数据和管理类 -->
+<script src="datamanager.js"></script>
+<script src="table.js"></script>
+<script src="menu.js"></script>
+
+        <!-- 模式切换按钮 -->
+        <div id="modeToggle" class="mode-toggle">
+            <button id="topViewBtn" class="top-view-btn">顶视环绕</button>
+            <button id="resetViewBtn" class="reset-view-btn">重置视角</button>
+        </div>
+        
+        <!-- 事件监听逻辑 -->
+        <script>
+            // 等待DOM加载完成
+            document.addEventListener('DOMContentLoaded', function() {
+                // 获取顶视按钮元素
+                const topViewBtn = document.getElementById('topViewBtn');
+                const resetViewBtn = document.getElementById('resetViewBtn');
+                
+                if (topViewBtn) {
+                    // 顶视按钮点击事件
+                    topViewBtn.addEventListener('click', function() {
+                        console.log('顶视按钮被点击');
+                        
+                        // 检查是否已经暴露了switchViewMode函数
+                        if (window.switchViewMode) {
+                            // 切换到顶视模式
+                            window.switchViewMode('topView');
+                            
+                            // 更新按钮样式表示当前状态
+                            topViewBtn.classList.add('active');
+                            
+                            // 延迟一下，确保切换生效
+                            setTimeout(() => {
+                                console.log('顶视模式已激活');
+                            }, 100);
+                        } else {
+                            console.error('switchViewMode函数未找到');
+                        }
+                    });
+                }
+                
+                if (resetViewBtn) {
+                    // 重置按钮点击事件
+                    resetViewBtn.addEventListener('click', function() {
+                        console.log('重置视角按钮被点击');
+                        
+                        // 切换回自由模式
+                        if (window.switchViewMode) {
+                            window.switchViewMode('free');
+                        }
+                        
+                        // 重置相机位置
+                        if (window.freeCameraController) {
+                            window.freeCameraController.reset();
+                        }
+                        
+                        // 更新按钮样式
+                        const topViewBtn = document.getElementById('topViewBtn');
+                        if (topViewBtn) {
+                            topViewBtn.classList.remove('active');
+                        }
+                    });
+                }
+                
+                // 监听键盘事件，提供快捷键支持
+                document.addEventListener('keydown', function(event) {
+                    // F键切换顶视模式
+                    if (event.key === 'f' || event.key === 'F') {
+                        event.preventDefault();
+                        if (window.switchViewMode) {
+                            // 如果当前是顶视模式，则切换到自由模式
+                            if (window.currentViewMode === 'topView') {
+                                window.switchViewMode('free');
+                                const topViewBtn = document.getElementById('topViewBtn');
+                                if (topViewBtn) {
+                                    topViewBtn.classList.remove('active');
+                                }
+                            } else {
+                                // 否则切换到顶视模式
+                                window.switchViewMode('topView');
+                                const topViewBtn = document.getElementById('topViewBtn');
+                                if (topViewBtn) {
+                                    topViewBtn.classList.add('active');
+                                }
+                            }
+                        }
+                    }
+                    
+                    // R键重置视角
+                    if (event.key === 'r' || event.key === 'R') {
+                        event.preventDefault();
+                        if (window.freeCameraController) {
+                            window.freeCameraController.reset();
+                        }
+                        if (window.switchViewMode) {
+                            window.switchViewMode('free');
+                        }
+                        const topViewBtn = document.getElementById('topViewBtn');
+                        if (topViewBtn) {
+                            topViewBtn.classList.remove('active');
+                        }
+                    }
+                });
+            });
+        </script>
+
+    <!-- 最后加载入口文件 -->
+    <script src="index.js"></script>
+</body>
+</html>
